@@ -6,9 +6,8 @@ field = [
     ['*', '*', '*']
 ]
 
-counter = 0
-
-playerSymbol = ["X","O"]
+player = "X"
+run = True
 
 def print_field(field):
     for row in range(len(field)):
@@ -16,30 +15,59 @@ def print_field(field):
             print(field[row][column], end=' ')
         print()    
 
-def user_input(playerSymbol, counter):
-    print("c: ", counter)
-    if(counter == 0):
-        print("FIRST player: X")
+def user_input(pl, playIsRunning):
+    while playIsRunning: 
+        definePlayer(pl)
+        userInputStrint = input("Insert field.\nExample: row,column\nExample: 0,1\n")
+        inputArray = userInputStrint.split(",")
+        row = int(inputArray[0])
+        column = int(inputArray[1])
+        if(field[row][column] == "*"):
+            field[row][column] = pl
+            print_field(field)
+            playIsRunning = findWinner(field, pl)
+            pl = switchPlayer(pl)
+        else:
+            print("The field is taken")    
+        
+
+def definePlayer(aPlayer):
+    if aPlayer == "X":
+        print("FIRST player:", aPlayer)
     else:
-        print("SECOND player: O")
-    userInputStrint = input("Insert field.\nExample: row,column\nExample: 0,1\n")
-    inputArray = userInputStrint.split(",")
-    row = int(inputArray[0])
-    column = int(inputArray[1])
-    if(field[row][column] == "*"):
-        field[row][column] = playerSymbol[c]
-        print_field(field)
+        print("SECOND player:", aPlayer)
+
+def switchPlayer(aPlayer):
+    if aPlayer == "X":
+        return "O"
     else:
-        print("The field is taken")    
-    return switchPlayer(counter)
+        return "X"    
 
 
-def switchPlayer(c):
-    if c > 0:
-        return 0
+def wonMessage(pl):
+    print ("GAME OVER\nPlayer", pl, "won")
+    return False
+
+def findWinner(field, pl):
+    if field[0][0] == field[0][1] == field[0][2] == pl:
+        return wonMessage(pl)
+    elif field[1][0] == field[1][1] == field[1][2] == pl:
+        return wonMessage(pl)
+    elif field[2][0] == field[2][1] == field[2][2] == pl:
+        return wonMessage(pl)
+    elif field[0][0] == field[0][1] == field[0][2] == pl:
+        return wonMessage(pl)
+    elif field[0][1] == field[1][1] == field[2][1] == pl:
+        return wonMessage(pl)
+    elif field[0][2] == field[1][2] == field[2][2] == pl:
+        return wonMessage(pl)       
+    elif field[0][0] == field[1][1] == field[2][2] == pl:
+        return wonMessage(pl)
+    elif field[0][2] == field[1][1] == field[2][0] == pl:
+        return wonMessage(pl)  
     else:
-        return 1      
+        return True    
+
 
 print_field(field)
-while True: 
-    counter = user_input(playerSymbol, counter)
+user_input(player, run)
